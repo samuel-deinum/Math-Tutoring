@@ -1,0 +1,278 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+    <style type="text/css">
+        #game {
+            /*margin: auto;*/
+            text-align: center;
+        }
+
+        .input-field {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            border: 4px solid #C2C2C2;
+            box-shadow: 1px 1px 4px #EBEBEB;
+            -moz-box-shadow: 1px 1px 4px #EBEBEB;
+            -webkit-box-shadow: 1px 1px 4px #EBEBEB;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            padding: 7px;
+            outline: none;
+            width: 38px;
+            height: 38px;
+            margin: 5px;
+        }
+
+        .input-field:focus {
+            border: 4px solid orange;
+        }
+
+        #clockDiv {
+            text-align: center;
+        }
+
+        .clock {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            border: 4px solid #C2C2C2;
+            box-shadow: 1px 1px 4px #EBEBEB;
+            -moz-box-shadow: 1px 1px 4px #EBEBEB;
+            -webkit-box-shadow: 1px 1px 4px #EBEBEB;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            padding: 7px;
+            outline: none;
+            width: 150px;
+            height: 100px;
+            margin: 5px;
+            font-size: 100px;
+            text-align: center;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div id="clockDiv">
+
+    </div>
+
+
+    <div id="game">
+
+    </div>
+
+
+
+
+    <script>
+
+        //For CLock
+        var clockDiv = document.getElementById("clockDiv");
+        var Minput = document.createElement("input");
+        var Sinput = document.createElement("input");
+
+        Minput.className = "clock";
+        Sinput.className = "clock";
+
+        Minput.readOnly = "readonly";
+        Sinput.readOnly = "readonly";
+
+        var minValue = 0;
+        var secValue = 0;
+
+        Minput.value = 0;
+        Sinput.value = "00";
+
+        clockDiv.appendChild(Minput);
+        clockDiv.appendChild(Sinput);
+
+        clockStart = 0;
+        var timeInterval;
+
+        //For Game
+        var score = 0;
+        var focused = 11;
+        var game = document.getElementById("game");
+
+        for (i = 0; i < 10; i++) {
+            for (j = 0; j < 10; j++) {
+                if (i == 0 && j == 0) {
+                    var input = document.createElement("input");
+                    input.className = "input-field";
+                    input.id = i * 10 + j;
+                    input.readOnly = "readonly";
+                    input.style.borderColor = "#f4c741";
+                } else if (i == 0) {
+                    var input = document.createElement("input");
+                    input.className = "input-field";
+                    input.id = i * 10 + j;
+                    input.readOnly = "readonly";
+                    input.value = j;
+                    input.style.textAlign = "center";
+                    input.style.borderColor = "#f4c741";
+                } else if (j == 0) {
+                    var input = document.createElement("input");
+                    input.className = "input-field";
+                    input.id = i * 10 + j;
+                    input.readOnly = "readonly";
+                    input.value = i;
+                    input.style.textAlign = "center";
+                    input.style.borderColor = "#f4c741";
+                } else {
+                    var input = document.createElement("input");
+                    input.id = i * 10 + j;
+                    input.type = "text";
+                    input.className = "input-field";
+                    input.onkeypress = function (e) {
+                        return event.charCode >= 48 && event.charCode <= 57;
+                    }
+                    input.onclick = function () {
+                        startClock()
+                        focusCheck();
+                        focused = parseInt(this.id);
+                    }
+                    input.style.textAlign = "center";
+                    input.maxLength = 2;
+
+                }
+
+                game.appendChild(input);
+
+            }
+            var blocker = document.createElement("div");
+            blocker.style.display = "block";
+            game.appendChild(blocker);
+        }
+
+        //focus on first object
+        document.getElementById(focused).focus();
+
+
+        document.onkeypress = function (e) {
+            if (e.charCode == 13 && focused != 99) {//ENTER
+                startClock();
+                if (focused - Math.floor(focused / 10) * 10 == 9) {
+                    focusCheck()
+                    focused = focused + 2;
+                } else {
+                    focusCheck()
+                    focused = focused + 1;
+                }
+                document.getElementById(focused).focus();
+            } else if (e.charCode == 13 && focused == 99) {
+                focusCheck();
+                focused = 11;
+                document.getElementById(focused).focus();
+            } else if (e.charCode >= 48 && e.charCode <= 57) {
+                startClock();
+                document.getElementById(focused).focus();
+            }
+        }
+
+        document.onkeydown = function (e) {
+
+            if (e.keyCode == 39 && focused != 99) {//RIGHT
+                startClock()
+                if (focused - Math.floor(focused / 10) * 10 == 9) {
+                    focusCheck()
+                    focused = focused + 2;
+                } else {
+                    focusCheck()
+                    focused = focused + 1;
+                }
+                document.getElementById(focused).focus();
+            } else if (e.keyCode == 39 && focused == 99) {
+                focusCheck();
+                focused = 11;
+                document.getElementById(focused).focus();
+            }
+            else if (e.keyCode == 37) {//Left
+                if (focused - Math.floor(focused / 10) * 10 == 1 && focused != 11) {
+                    focusCheck()
+                    focused = focused - 2;
+                } else if (focused == 11) {
+                    startClock();
+                    focusCheck();
+                    focused = 99;
+                } else {
+                    focusCheck()
+                    focused = focused - 1;
+                }
+                document.getElementById(focused).focus();
+            } else if (e.keyCode == 40 && Math.floor(focused / 10) != 9) {//DOWN
+                startClock()
+                focusCheck()
+                focused = focused + 10;
+                document.getElementById(focused).focus();
+            } else if (e.keyCode == 38 && Math.floor(focused / 10) != 1) {//UP
+                focusCheck()
+                focused = focused - 10;
+                document.getElementById(focused).focus();
+            }
+        }
+        function focusCheck() {
+
+            var box = document.getElementById(focused);
+            if (box.value == Math.floor(focused / 10) * (focused - Math.floor(focused / 10) * 10)) {
+                if (box.style.borderColor != "green") {
+                    score = score + 1;
+                    checkScore();
+                }
+                box.style.borderColor = "green";
+
+            } else if (box.value != "") {
+                if (box.style.borderColor == "green") {
+                    score = score - 1;
+                    checkScore();
+                }
+                box.style.borderColor = "red";
+            }
+        }
+
+        function startClock() {
+            if (clockStart == 0) {
+                clockStart = 1;
+                timeInterval = setInterval(second, 1000);
+            }
+        }
+
+        function second() {
+            secValue = secValue + 1;
+            if (secValue == 60) {
+                minValue = minValue + 1;
+                secValue = 0
+                Minput.value = minValue;
+            }
+
+            if (secValue < 10) {
+                Sinput.value = "0" + secValue;
+            } else {
+                Sinput.value = secValue;
+            }
+        }
+
+        function checkScore() {
+            if (score == 81) {
+                clearInterval(timeInterval);
+                Minput.style.borderColor = "green";
+                Sinput.style.borderColor = "green";
+
+            }
+        }
+
+    </script>
+
+</body>
+
+
+</html>

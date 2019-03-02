@@ -1,0 +1,477 @@
+<!doctype html>
+
+<html>
+
+<head>
+
+    <style type="text/css">
+        #game {
+            display: inline-block;
+            height: 100%;
+            width: 100%;
+        }
+
+        #cl {
+            height: 600px;
+            overflow: auto;
+            border: 5px;
+            border: 4px solid orange;
+            display: inline-block;
+        }
+
+        #cr {
+            height: 600px;
+            overflow: auto;
+            border: 5px;
+            border: 4px solid orange;
+            display: inline-block;
+        }
+
+        .line {
+            display: inline-block;
+        }
+
+        .box {
+            margin-left: 5px;
+            margin-right: 5px;
+            display: inline-block;
+            /*align-self: center;*/
+        }
+
+        svg {
+            /*vertical-align: middle;*/
+        }
+
+        .numDisplay {
+            border: none;
+            padding: 7px;
+            outline: none;
+            width: 50px;
+            height: 30px;
+            margin: 5px;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .input-field {
+            padding: 7px;
+            outline: none;
+            width: 70px;
+            height: 40px;
+            margin: 5px;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .border {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            border: 4px solid #C2C2C2;
+            box-shadow: 1px 1px 4px #EBEBEB;
+            -moz-box-shadow: 1px 1px 4px #EBEBEB;
+            -webkit-box-shadow: 1px 1px 4px #EBEBEB;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+        }
+
+        .input-field:focus {
+            border: 4px solid orange;
+        }
+
+        #clockDiv {
+            text-align: center;
+        }
+
+        .clock {
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            border: 4px solid #C2C2C2;
+            box-shadow: 1px 1px 4px #EBEBEB;
+            -moz-box-shadow: 1px 1px 4px #EBEBEB;
+            -webkit-box-shadow: 1px 1px 4px #EBEBEB;
+            border-radius: 3px;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            padding: 7px;
+            outline: none;
+            width: 150px;
+            height: 100px;
+            margin: 5px;
+            font-size: 100px;
+            text-align: center;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div id="game">
+        <div id="cl"></div>
+        <div id="cr"></div>
+        <div style="display:block"></div>
+    </div>
+
+
+    <script>
+        //mSVG Object
+        var mSVG = {
+            equal: function (box, h) {
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', h + "px");
+                svg.setAttribute('height', h + "px");
+                var svgNS = svg.namespaceURI;
+
+                var rect = document.createElementNS(svgNS, 'rect');
+                rect.setAttribute('x', "0%");
+                rect.setAttribute('y', "20%");
+                rect.setAttribute('width', "100%");
+                rect.setAttribute('height', "20%");
+                rect.setAttribute('fill', '#000000');
+                svg.appendChild(rect);
+
+                var rect2 = document.createElementNS(svgNS, 'rect');
+                rect2.setAttribute('x', "0%");
+                rect2.setAttribute('y', "60%");
+                rect2.setAttribute('width', "100%");
+                rect2.setAttribute('height', "20%");
+                rect2.setAttribute('fill', '#000000');
+
+                svg.appendChild(rect2);
+                box.appendChild(svg);
+            },
+            plus: function (box, h) {
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', h + "px");
+                svg.setAttribute('height', h + "px");
+                var svgNS = svg.namespaceURI;
+
+                var rect = document.createElementNS(svgNS, 'rect');
+                rect.setAttribute('x', "0%");
+                rect.setAttribute('y', "40%");
+                rect.setAttribute('width', "100%");
+                rect.setAttribute('height', "20%");
+                rect.setAttribute('fill', '#000000');
+                svg.appendChild(rect);
+
+                var rect2 = document.createElementNS(svgNS, 'rect');
+                rect2.setAttribute('x', "40%");
+                rect2.setAttribute('y', "0%");
+                rect2.setAttribute('width', "20%");
+                rect2.setAttribute('height', "100%");
+                rect2.setAttribute('fill', '#000000');
+
+                svg.appendChild(rect2);
+                box.appendChild(svg);
+            },
+            minus: function (box, h) {
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', h + "px");
+                svg.setAttribute('height', h + "px");
+                var svgNS = svg.namespaceURI;
+
+                var rect = document.createElementNS(svgNS, 'rect');
+                rect.setAttribute('x', "0%");
+                rect.setAttribute('y', "40%");
+                rect.setAttribute('width', "100%");
+                rect.setAttribute('height', "20%");
+                rect.setAttribute('fill', '#000000');
+                svg.appendChild(rect);
+
+                box.appendChild(svg);
+            },
+            multiply: function (box, h) {
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', h + "px");
+                svg.setAttribute('height', h + "px");
+                svg.setAttribute('viewBox', "0 0 100 100");
+                var svgNS = svg.namespaceURI;
+
+                var path1 = document.createElementNS(svgNS, 'path');
+                path1.setAttribute('fill', "#000");
+                path1.setAttribute('d', "M14 0 L50 36 L86 0 L100 14 L64 50 L100 86 L86 100 L50 64 L14 100 L0 86 L36 50 L0 14 Z");
+                svg.appendChild(path1);
+
+                box.appendChild(svg);
+            },
+            devide: function (box, h) {
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute('width', h + "px");
+                svg.setAttribute('height', h + "px");
+                var svgNS = svg.namespaceURI;
+
+                var rect = document.createElementNS(svgNS, 'rect');
+                rect.setAttribute('x', "0%");
+                rect.setAttribute('y', "40%");
+                rect.setAttribute('width', "100%");
+                rect.setAttribute('height', "20%");
+                rect.setAttribute('fill', '#000000');
+                svg.appendChild(rect);
+
+                var circ1 = document.createElementNS(svgNS, 'circle');
+                circ1.setAttribute('cx', "50%");
+                circ1.setAttribute('cy', "10%");
+                circ1.setAttribute('r', "10%");
+                circ1.setAttribute('fill', '#000000');
+                svg.appendChild(circ1);
+
+
+                var circ2 = document.createElementNS(svgNS, 'circle');
+                circ2.setAttribute('cx', "50%");
+                circ2.setAttribute('cy', "90%");
+                circ2.setAttribute('r', "10%");
+                circ2.setAttribute('fill', '#000000');
+                svg.appendChild(circ2);
+
+
+
+                box.appendChild(svg);
+
+            }
+        }
+
+
+        //For CLock
+        var cr = document.getElementById("cr");
+        var Minput = document.createElement("input");
+        var Sinput = document.createElement("input");
+
+        Minput.className = "clock";
+        Sinput.className = "clock";
+
+        Minput.readOnly = "readonly";
+        Sinput.readOnly = "readonly";
+
+        var minValue = 2;
+        var secValue = 0;
+
+        Minput.value = minValue;
+        Sinput.value = "00";
+
+        cr.appendChild(Minput);
+        cr.appendChild(Sinput);
+
+        var clockStart = 0;
+        var timeInterval;
+
+        //For Score
+        var score = document.createElement("input");
+        score.className = "clock";
+
+        var scoreVal = 0;
+        score.value = scoreVal;
+
+        var blocker = document.createElement("div");
+        blocker.style.display = "block";
+        cr.appendChild(blocker);
+
+        cr.appendChild(score);
+
+        /*
+        Addition Less than 10:
+
+            var numMax = 9;
+            var range = 2;
+            var rangeAdjust = -1;
+
+            function newQuestion() {
+
+                range = range + rangeAdjust;
+                rangeAdjust = -rangeAdjust;
+
+                var num1 = Math.floor((Math.random() * numMax / range) + 1);
+                var num2 = Math.floor((Math.random() * (numMax - num1)) + 1);
+
+                createLine(num1, num2);
+            }
+
+            mSVG.plus(plusBox, 20);
+
+            v1 + v2 == this.value
+
+
+        Addition Greater than 10 (Still Testing)
+            var range = 0;
+            var rangeAdjust = 1;
+
+            function newQuestion() {
+
+                range = range + rangeAdjust;
+                rangeAdjust = -rangeAdjust;
+
+                var num1 = Math.floor((Math.random() * numMax / 2) + 1 + numMax / 2 * range);
+                var num2 = Math.floor((Math.random() * num1) + 1 + (numMax - num1));
+
+                createLine(num1, num2);
+            }
+
+            mSVG.plus(plusBox, 20);
+
+            v1 + v2 == this.value
+
+        Subtraction Less Than 10
+
+                var range = 2;
+                var rangeAdjust = -1;
+
+
+                function newQuestion() {
+
+                    range = range + rangeAdjust;
+                    rangeAdjust = -rangeAdjust;
+
+                    console.log(range);
+
+                    var num1 = Math.floor((Math.random() * numMax / range) + 1 + (numMax / range) * (range - 1));
+                    var num2 = Math.floor((Math.random() * (num1 - 1)) + 1);
+
+                    createLine(num1, num2);
+                }
+
+
+                if (v1 - v2 == this.value)
+
+                mSVG.minus(plusBox, 20);
+
+
+        For Multiply
+
+
+            var num1 = Math.floor((Math.random() * numMax) + 1);
+            var num2 = Math.floor((Math.random() * numMax) + 1);
+
+            mSVG.multiply(plusBox, 20);
+            if (v1 * v2 == this.value)
+
+        */
+
+        //For game
+        var numMax = 9;
+
+        newQuestion();
+        startClock();
+
+
+        function newQuestion() {
+
+            var num1 = Math.floor((Math.random() * numMax) + 1);
+            var num2 = Math.floor((Math.random() * numMax) + 1);
+
+            createLine(num1, num2);
+        }
+
+        function createLine(v1, v2) {
+
+            //Standard Items
+            var cl = document.getElementById("cl");
+            var line = document.createElement("div");
+
+
+
+            var num1 = document.createElement("input");
+            num1.type = "text";
+            num1.className = "numDisplay";
+            num1.readOnly = "readonly";
+
+
+            //For Plus and Minus
+            var plusBox = document.createElement('div');
+            plusBox.className = "box";
+            mSVG.multiply(plusBox, 20);
+
+
+            var num2 = document.createElement("input");
+            num2.type = "text";
+            num2.className = "numDisplay";
+            num2.readOnly = "readonly";
+
+            var equalBox = document.createElement('div');
+            equalBox.className = "box";
+            mSVG.equal(equalBox, 20);
+
+            var input = document.createElement("input");
+            input.type = "text";
+            input.className = "input-field border";
+            input.onkeypress = function (e) {
+                if (e.charCode == 13) {
+                    if (v1 * v2 == this.value) {
+                        this.style.borderColor = "green";
+                        this.readOnly = "readonly";
+                        scoreVal = scoreVal + 1;
+                        score.value = scoreVal;
+                        newQuestion();
+                    } else {
+                        this.style.borderColor = "red";
+                    }
+                }
+                return event.charCode >= 48 && event.charCode <= 57;
+            }
+            input.maxLength = 2;
+
+
+            num1.value = v1;
+            num2.value = v2;
+
+            var blocker = document.createElement("div");
+            blocker.style.display = "block";
+            line.appendChild(blocker);
+
+            line.appendChild(num1);
+            line.appendChild(plusBox);
+            line.appendChild(num2);
+            line.appendChild(equalBox);
+            line.appendChild(input);
+
+
+            cl.appendChild(line);
+            input.focus();
+        }
+
+        function startClock() {
+            if (clockStart == 0) {
+                clockStart = 1;
+                timeInterval = setInterval(second, 1000);
+            }
+        }
+
+        function second() {
+            secValue = secValue - 1;
+            if (secValue == -1) {
+                minValue = minValue - 1;
+                if (minValue == -1) {
+                    endGame();
+                    return;
+                } else {
+                    secValue = 59;
+                    Minput.value = minValue;
+                }
+
+            }
+
+            if (secValue < 10) {
+                Sinput.value = "0" + secValue;
+            } else {
+                if (minValue > -1) {
+                    Sinput.value = secValue;
+                }
+            }
+        }
+
+        function endGame() {
+            clearInterval(timeInterval);
+            var inputs = cl.getElementsByTagName("input");
+            inputs[inputs.length - 1].readOnly = "readOnly";
+
+        }
+
+
+    </script>
+
+</body>
+
+
+</html>
