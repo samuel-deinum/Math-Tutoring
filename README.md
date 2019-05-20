@@ -1,4 +1,4 @@
-# whiteboard
+# Math-Tutoring
 
 This project is dedicated to helping teachers teach and students learn.  I'm currently using these programs for turtoring kids in grades 6 and 7. 
 
