@@ -6,8 +6,4 @@ The TimeTable file helps students practice their multiplication.  The time it ta
 
 The Timed Tester file again helps students with their multiplication, but it could be easily modified for addition, subtraction, and devision. 
 
-The Teaching Hub file it used to create animations, but later will be used to incorporate the games and features. 
-
-The draw file is a simple svg creater that will later be incorporated into the Teaching Hub
-
 
